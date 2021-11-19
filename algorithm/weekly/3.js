@@ -22,16 +22,17 @@
  */
 
 function getLength(n) {
-  let binary = n.toString(2);
-  let len = [];
+  const binary = n.toString(2).match(/0|1/g);
+
+  let currentLength = -1;
   let maxLength = 0;
-  console.log(binary);
-  // 1과 1사이의 거리....
-  // 1011 1000000001  10000000000000001  10000000000000000001  100000000000000000000001  100000000000000000000000001
+
   for (let i = 0; i < binary.length; i++) {
-    if (binary[i] == '1') len.push(i);
+    if (binary[i] == '1') currentLength++;
   }
-  return len.length == 2 ? len[len.length - 1] : len[len.length - 1] - 1;
+  console.log(currentLength);
 }
+
+getLength(11);
 
 module.exports = getLength;
