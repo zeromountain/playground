@@ -5,7 +5,8 @@
         "node": true
     },
     "plugins": [
-        "prettier"
+        "prettier",
+        "jest"
     ],
     "extends": [
         "airbnb-base",
@@ -15,31 +16,5 @@
         "ecmaVersion": 2021,
         "sourceType": "module"
     },
-    "rules": {
-        "no-console": "off",
-        "no-unused-vars": "warn",
-        "no-restricted-syntax": "off",
-        "no-plusplus": "off",
-        "prefer-const": "off",
-        "no-irregular-whitespace": "off",
-        "no-var": "off",
-        "prefer-arrow-callback": "off",
-        "no-new-wrappers": "off",
-        "no-new-func": "off",
-        "no-array-constructor": "off",
-        "prefer-regex-literals": "off",
-        "vars-on-top": "off",
-        "no-shadow": "off",
-        "no-new": "off",
-        "new-cap": "off",
-        "no-proto": "off",
-        "no-use-before-define": "off",
-        "no-debugger": "off",
-        "one-var": "off",
-        "no-underscore-dangle": "off",
-        "no-loop-func": "off",
-        "prefer-rest-params": "off",
-        "block-scoped-var": "off",
-        "guard-for-in": "off",
-    }
+    "rules": {}
 }
