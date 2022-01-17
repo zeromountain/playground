@@ -1,24 +1,33 @@
 import express from 'express';
+import http from 'http';
 import cors from 'cors';
-import messagesRoute from '../routes/messages.js';
-import usersRoute from '../routes/users.js';
+import { ApolloServer } from 'apollo-server-express';
+import resolvers from './resolvers/index.js';
+import schema from './shcema/index.js';
+import { readDB } from './dbController.js';
 
-const app = express();
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+(async () => {
+  const app = express();
 
-app.use(
-  cors({
-    origin: 'http://localhost:3000',
-    credentials: true,
-  })
-);
+  app.use(
+    cors({
+      origin: ['http://localhost:3000', 'https://studio.apollographql.com'],
+      credentials: true,
+    })
+  );
+  const httpServer = http.createServer(app);
 
-const routes = [...messagesRoute, ...usersRoute];
-routes.forEach(({ method, route, handler }) => {
-  app[method](route, handler);
-});
+  const apollo = new ApolloServer({
+    typeDefs: schema,
+    resolvers,
+    context: {
+      messages: readDB('messages'),
+      users: readDB('users'),
+    },
+  });
 
-app.listen(5000, () => {
-  console.log('server listening on 5000');
-});
+  await apollo.start();
+  apollo.applyMiddleware({ app, path: '/api' });
+  await new Promise(resolve => httpServer.listen({ port: 4000 }, resolve));
+  console.log(`🚀 Server ready at http://localhost:4000/api`);
+})();
