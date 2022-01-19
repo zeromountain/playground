@@ -7,6 +7,17 @@ import schema from './shcema/index.js';
 import { readDB } from './dbController.js';
 
 (async () => {
+  const apollo = new ApolloServer({
+    typeDefs: schema,
+    resolvers,
+    context: {
+      db: {
+        messages: readDB('messages'),
+        users: readDB('users'),
+      },
+    },
+  });
+
   const app = express();
 
   app.use(
@@ -16,15 +27,6 @@ import { readDB } from './dbController.js';
     })
   );
   const httpServer = http.createServer(app);
-
-  const apollo = new ApolloServer({
-    typeDefs: schema,
-    resolvers,
-    context: {
-      messages: readDB('messages'),
-      users: readDB('users'),
-    },
-  });
 
   await apollo.start();
   apollo.applyMiddleware({ app, path: '/api' });

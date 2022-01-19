@@ -11,16 +11,16 @@ context: 로그인한 사용자. DB Access 등의 중요한 정보들
 
 const messageResolver = {
   Query: {
-    messages: (parent, args, context) => {
+    messages: (parent, args, { db }) => {
       // console.log({ parent, args, context })
-      return context.messages;
+      return db.messages;
     },
-    message: (parent, { id = '' }, context) => {
-      return context.messages.find(msg => msg.id === id);
+    message: (parent, { id = '' }, { db }) => {
+      return db.messages.find(msg => msg.id === id);
     },
   },
   Mutation: {
-    createMessage: (parent, { text, userId }, context) => {
+    createMessage: (parent, { text, userId }, { db }) => {
       if (!userId) throw Error('사용자가 없습니다.');
       const newMsg = {
         id: v4(),
@@ -28,28 +28,28 @@ const messageResolver = {
         userId,
         timestamp: Date.now(),
       };
-      context.messages.unshift(newMsg);
-      setMsgs(context.messages);
+      db.messages.unshift(newMsg);
+      setMsgs(db.messages);
       return newMsg;
     },
-    updateMessage: (parent, { id, text, userId }, context) => {
-      const targetIndex = context.messages.findIndex(msg => msg.id === id);
+    updateMessage: (parent, { id, text, userId }, { db }) => {
+      const targetIndex = db.messages.findIndex(msg => msg.id === id);
       if (targetIndex < 0) throw Error('메시지가 없습니다.');
-      if (context.messages[targetIndex].userId !== userId)
+      if (db.messages[targetIndex].userId !== userId)
         throw Error('사용자가 다릅니다.');
 
-      const newMsg = { ...context.messages[targetIndex], text };
-      context.messages.splice(targetIndex, 1, newMsg);
-      setMsgs(context.messages);
+      const newMsg = { ...db.messages[targetIndex], text };
+      db.messages.splice(targetIndex, 1, newMsg);
+      setMsgs(db.messages);
       return newMsg;
     },
-    deleteMessage: (parent, { id, userId }, context) => {
-      const targetIndex = context.messages.findIndex(msg => msg.id === id);
+    deleteMessage: (parent, { id, userId }, { db }) => {
+      const targetIndex = db.messages.findIndex(msg => msg.id === id);
       if (targetIndex < 0) throw '메시지가 없습니다.';
-      if (context.messages[targetIndex].userId !== userId)
+      if (db.messages[targetIndex].userId !== userId)
         throw '사용자가 다릅니다.';
-      context.messages.splice(targetIndex, 1);
-      setMsgs(context.messages);
+      db.messages.splice(targetIndex, 1);
+      setMsgs(db.messages);
       return id;
     },
   },
